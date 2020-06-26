@@ -1,0 +1,13 @@
+nb1 = 3,2,1,0,12
+nb2 = 4,1,0,1,10
+zb = 4,3,0,0,0
+
+tableau = np.float32([nb1,nb2,zb])
+# print(tableau)
+
+'''
+Das ganze so lange durchlaufen lassen bis in der letzten Zeile nur noch negative Werte oder 0 stehen
+Schritt 1 bis 5 immer wieder wiederholen bis die gesamte letzte Zeile keine positiven Werte mehr hat
+'''
+while tableau[-1,0] > 0 or tableau[-1,1] > 0 or tableau[-1,2] > 0 or tableau[-1,3] > 0 or tableau[-1,4] > 0:
+  tableau = Simplex(tableau)
