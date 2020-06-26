@@ -1,2 +1,2 @@
 # smallProjects
-collection of projects i had to do for class
+A small collection of projects I had to do for class
