@@ -21,53 +21,57 @@ or check out my example
 import numpy as np
 
 def Simplex(tableau):
-    print('Function started')
+    print('Function run started')
     simplexTableau = tableau.copy()
 
-    print('Simplextableau at start:')
+    print('Simplextableau at the start:')
     print(simplexTableau)
 
 
-    #Step 1: Letze Zeile des Array, höchsten Wert bestimmen -> Pivotspalte
+    #Step 1: Find the biggest value in the last line to determine the pivotcolumn
     max = np.max(simplexTableau[-1])
-    pivotspalte = np.argmax(simplexTableau[-1,:])
+    pivotcolumn = np.argmax(simplexTableau[-1,:])
 
 
-    #Step 2: Letzte Spalte durch die Pivotspaltenwerte teilen (NICHT DIE ALTE ÜBERSCHREIBEN!)
+    #Step 2: Divide the last column with the according picotcolumn value to calculate the "engpass". Be careful to not to delete the actual values
     engpass = np.array([])
 
     for i in range(len(simplexTableau)-1):
-      engpässe_temp = simplexTableau[i,-1]/simplexTableau[i,pivotspalte]
+      engpässe_temp = simplexTableau[i,-1]/simplexTableau[i,pivotcolumn]
       engpass = np.append(engpass,engpässe_temp)
 
 
-    #Step 3: Kleinsten positiven Wert des Zwischenspeichers bestimmen -> Pivotzeile
+    #Step 3: Find the smallest positive value from the "engpass" values to determine the pivotline
     for i in range(engpass.size):
       if engpass[i] < 0:
         engpass[i] = 999999
 
-    pivotzeile = np.argmin(engpass)
+    pivotline = np.argmin(engpass)
 
 
-    #Step 4: Pivotelement auf 1 bringen -> ganze Zeile durch den Wert des Elements teilen
-    pivotelement = simplexTableau[pivotzeile,pivotspalte]
-
+    #Step 4: Pivotelement needs to be 1 for the code to work. Divide the whole pivotline with the pivotelement value
+    pivotelement = simplexTableau[pivotline,pivotcolumn]
+    
+    #can only work if the value isn't zero
+    #you could change the zero to take the machine accurancy into account using epsilon
     if pivotelement != 0:
-      simplexTableau[pivotzeile,:] = simplexTableau[pivotzeile,:]/pivotelement
-      pivotelement = simplexTableau[pivotzeile,pivotspalte]
+      simplexTableau[pivotline,:] = simplexTableau[pivotline,:]/pivotelement
+      pivotelement = simplexTableau[pivotline,pivotcolumn]
 
 
-    #Step 5: Alle Zeilen so lange durch die Pivotzeile subtrahieren bis diese in der Pivotspalte "0" ist
-    #Alles über der Pivotzeile
-    for i in range(pivotzeile):
-      if simplexTableau[i,pivotspalte] != 0:
-        simplexTableau[i] = simplexTableau[i]-(simplexTableau[i,pivotspalte]*simplexTableau[pivotzeile])
+    #Step 5: Subtract all the lines with the pivotline till all the values until the pivotcolumn is only zeros (except the pivotelement)
+    #Everything above the pivotline
+    for i in range(pivotline):
+      #you could change the zero to take the machine accurancy into account using epsilon
+      if simplexTableau[i,pivotcolumn] != 0:
+        simplexTableau[i] = simplexTableau[i]-(simplexTableau[i,pivotcolumn]*simplexTableau[pivotline])
       else:
         break
-    #Alles unter der Pivotzeile
-    for i in range(pivotzeile+1,len(simplexTableau)):
-      if simplexTableau[i,pivotspalte] != 0:
-        simplexTableau[i] = simplexTableau[i]-(simplexTableau[i,pivotspalte]*simplexTableau[pivotzeile])
+    #Everything under the pivotline
+    for i in range(pivotline+1,len(simplexTableau)):
+      #you could change the zero to take the machine accurancy into account using epsilon
+      if simplexTableau[i,pivotcolumn] != 0:
+        simplexTableau[i] = simplexTableau[i]-(simplexTableau[i,pivotcolumn]*simplexTableau[pivotline])
       else:
         break
     
