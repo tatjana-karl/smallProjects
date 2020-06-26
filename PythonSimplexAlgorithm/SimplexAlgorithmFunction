@@ -1,1 +1,77 @@
+'''
+Simplex Algorithm in Python (Max. Problem)
 
+author: Tatjana Karl
+website: https://github.com/tatjana-karl
+
+Please feel free to use and modify this, but keep the above information. Thanks!
+
+You need a multidimensional Array as an input and will get a multidimensional Array as an output
+Make sure youre using a maximising problem
+
+Makes sure you let the function run untill the last row is only <= 0
+e.g. with a line like this:
+while tableau[-1,0] > 0 or tableau[-1,1] > 0 or tableau[-1,2] > 0 or tableau[-1,3] > 0 or tableau[-1,4] > 0:
+  tableau = Simplex(tableau)
+ 
+or check out my example
+'''
+
+# NumPy
+import numpy as np
+
+def Simplex(tableau):
+    print('Function started')
+    simplexTableau = tableau.copy()
+
+    print('Simplextableau at start:')
+    print(simplexTableau)
+
+
+    #Step 1: Letze Zeile des Array, höchsten Wert bestimmen -> Pivotspalte
+    max = np.max(simplexTableau[-1])
+    pivotspalte = np.argmax(simplexTableau[-1,:])
+
+
+    #Step 2: Letzte Spalte durch die Pivotspaltenwerte teilen (NICHT DIE ALTE ÜBERSCHREIBEN!)
+    engpass = np.array([])
+
+    for i in range(len(simplexTableau)-1):
+      engpässe_temp = simplexTableau[i,-1]/simplexTableau[i,pivotspalte]
+      engpass = np.append(engpass,engpässe_temp)
+
+
+    #Step 3: Kleinsten positiven Wert des Zwischenspeichers bestimmen -> Pivotzeile
+    for i in range(engpass.size):
+      if engpass[i] < 0:
+        engpass[i] = 999999
+
+    pivotzeile = np.argmin(engpass)
+
+
+    #Step 4: Pivotelement auf 1 bringen -> ganze Zeile durch den Wert des Elements teilen
+    pivotelement = simplexTableau[pivotzeile,pivotspalte]
+
+    if pivotelement != 0:
+      simplexTableau[pivotzeile,:] = simplexTableau[pivotzeile,:]/pivotelement
+      pivotelement = simplexTableau[pivotzeile,pivotspalte]
+
+
+    #Step 5: Alle Zeilen so lange durch die Pivotzeile subtrahieren bis diese in der Pivotspalte "0" ist
+    #Alles über der Pivotzeile
+    for i in range(pivotzeile):
+      if simplexTableau[i,pivotspalte] != 0:
+        simplexTableau[i] = simplexTableau[i]-(simplexTableau[i,pivotspalte]*simplexTableau[pivotzeile])
+      else:
+        break
+    #Alles unter der Pivotzeile
+    for i in range(pivotzeile+1,len(simplexTableau)):
+      if simplexTableau[i,pivotspalte] != 0:
+        simplexTableau[i] = simplexTableau[i]-(simplexTableau[i,pivotspalte]*simplexTableau[pivotzeile])
+      else:
+        break
+    
+    print('Simplextableau at the end:')
+    print(simplexTableau)
+    
+    return simplexTableau
